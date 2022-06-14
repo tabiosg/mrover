@@ -71,21 +71,15 @@ catkin_python_setup()
 ## Generate messages in the 'msg' folder
 add_message_files(
         FILES
-        Enable.msg
-        Heater.msg
         MarkerInfo.msg
-        Spectral.msg
-        Thermistor.msg
 )
 
-# Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  ChangeAutonLEDState.srv
-  ChangeDeviceState.srv
-  ChangeHeaterState.srv
-  ChangeServoAngles.srv
-)
+## Generate services in the 'srv' folder
+# add_service_files(
+#   FILES
+#   Service1.srv
+#   Service2.srv
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -204,17 +198,10 @@ install(DIRECTORY launch/
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-catkin_install_python(PROGRAMS
-  scripts/change_arm_laser_state_server.py
-  scripts/change_auton_led_state_server.py
-  scripts/change_heater_auto_shut_off_state_server.py
-  scripts/change_heater_state_server.py
-  scripts/change_servo_angles_server.py
-  scripts/change_uv_led_carousel_state_server.py
-  scripts/change_uv_led_end_effector_state_server.py
-  scripts/change_white_led_state_server.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+# catkin_install_python(PROGRAMS
+#   scripts/my_python_script
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
