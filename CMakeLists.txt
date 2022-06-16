@@ -72,6 +72,7 @@ catkin_python_setup()
 add_message_files(
         FILES
         MarkerInfo.msg
+        ZedGimbalPosition.msg
 )
 
 ## Generate services in the 'srv' folder
