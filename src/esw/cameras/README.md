@@ -8,7 +8,7 @@
 [Setup](#setup) \
 [Issues](#issues) \
 [Error Handling](#error-handling) \
-[Requirements](#software-requirements) \
+[Software Requirements](#software-requirements) \
 [TODO](#todo) \
 [TODO - ROS Migration](#todo---ros-migration)
 
