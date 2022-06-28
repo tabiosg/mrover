@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(mrover)
 
 ## Compile as C++17, supported in ROS Kinetic and newer
-add_compile_options(-std=c++17)
+add_compile_options(-std=c++17 -Wall -Wextra -Werror -pedantic)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -71,6 +71,8 @@ catkin_python_setup()
 ## Generate messages in the 'msg' folder
 add_message_files(
         FILES
+        Course.msg
+        Waypoint.msg
         ZedGimbalPosition.msg
 )
 
