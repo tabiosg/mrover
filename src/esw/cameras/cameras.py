@@ -221,6 +221,8 @@ class PipelineManager:
         if self._current_mission == mission_name:
             return ChangeCameraMissionResponse(self._current_mission)
         self._update_mission(mission_name)
+        # TODO - make it more explicit that we're changing
+        # the resolution and IPs by adding functions and rewriting code
         self._update_all_video_outputs()
 
         return ChangeCameraMissionResponse(self._current_mission)
