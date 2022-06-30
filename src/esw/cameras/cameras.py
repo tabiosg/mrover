@@ -103,13 +103,9 @@ class Pipeline:
         camera device does not exist or if the request is -1, it will not be
         assigned a device.
 
-        Args:
-            dev_index: An int that is the camera device that it is assigned.
-            video_sources: A jetson.utils.videoSource that it will be
-            streaming from. This may be None.
-
-        Returns:
-            None.
+        :param dev_index: An int that is the camera device that it is assigned.
+        :param video_sources: A jetson.utils.videoSource that it will be
+                              streaming from. This may be None.
         """
         self.device_number = dev_index
         if dev_index != -1:
@@ -124,16 +120,9 @@ class Pipeline:
                 self.stop_streaming()
 
     def update_video_output(self) -> None:
-        """Updates the video output to ensure that pipeline is streaming to
+        """
+        Updates the video output to ensure that pipeline is streaming to
         the assigned IP and has the proper arguments.
-
-        Args:
-            arguments: A list of strings that is needed for the
-            jetson.utils objects' capture arguments.
-            ip: A string that is the assigned mission_ip.
-
-        Returns:
-            None.
         """
         self._video_output = jetson.utils.videoOutput(
             f"rtp://{self.current_ip}",
