@@ -27,7 +27,7 @@ class Pipeline:
     based on the number of maximum pipelines.
 
     Attributes:
-        arguments: A list of strings that is needed for the jetson.utils 
+        arguments: A list of strings that is needed for the jetson.utils
         objects' capture arguments.
         current_ip: A string that is IP it is assigned to.
         _device_number: An int that is the device number it is assigned to as
@@ -465,7 +465,6 @@ class PipelineManager:
             None.
         """
         self._pipelines[pipe_index].update_device_number(
-            self._get_current_arguments(),
             dev_index, self._video_sources[dev_index]
         )
         print(
