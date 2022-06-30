@@ -160,13 +160,14 @@ Actual behavior: The program freezes (presumably on the Capture function).
 - Can stream the feed of one device to multiple IPs.
 - Does not crash when camera is unplugged while not streaming.
 - Does not crash when camera is unplugged while streaming.
-- Properly changes camera upon ChangeCameras service request
-- Properly sends ChangeCameras service response
-- Properly changes camera upon ChangeCameraMission service request
-- Properly sends ChangeCamera service response
-- Changing mission allows one to modify IPs and resolutions
-- Can configure IPs used per mission
-- Can configure resolutions used per mission
+- Properly changes cameras upon ChangeCameras service request.
+- Properly sends ChangeCameras service response.
+- Properly changes camera mission upon ChangeCameraMission service request.
+- Properly sends ChangeCameraMission service response.
+- Changing mission allows one to modify IPs and resolutions.
+- Can configure IPs used per mission.
+- Can configure resolutions used per mission.
+- Does not switch cameras when mission is switched.
 
 ---
 
