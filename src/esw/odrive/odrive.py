@@ -601,8 +601,8 @@ class ODriveBridge(object):
             print("on event called, ODrive event:", event)
             self._state = self._state.on_event(event, self._modrive)
             self._publish_state_msg(self._get_state_string())
-        except Exception:
-            pass
+        except DisconnectedError:
+            return
 
     def _change_speeds(self, left: float, right: float) -> None:
         """Sets the self._left_speed and self._right_speed to the requested
