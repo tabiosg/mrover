@@ -88,7 +88,8 @@ class Pipeline:
         camera device does not exist or if the request is -1, it will not be
         assigned a device.
 
-        :param dev_index: An int that is the camera device that it is assigned.
+        :param dev_index: An integer that is the camera device that it is
+            assigned.
         :param video_sources: A jetson.utils.videoSource that it will be
         streaming from. This may be None.
         """
@@ -244,7 +245,8 @@ class PipelineManager:
         """Cleans up a pipeline after its device has failed by unassigning it
         to a device and safely closing the stream and the video source.
 
-        :param pipe_index: the number of the pipeline that has failed.
+        :param pipe_index: An integer that is the number of the pipeline that
+            has failed.
         """
         failed_device = self._pipelines[pipe_index].device_number
         print(
@@ -269,8 +271,8 @@ class PipelineManager:
         are using the device, then it is safely cleaned. If others are using
         the device, nothing will happen.
 
-        :param pipe_index: the number of the pipeline whose device is being
-            checked.
+        :param pipe_index: An integer that is the number of the pipeline whose
+            device is being checked.
         """
         if self._pipeline_device_is_unique(pipe_index):
             pipeline_device_number = (
@@ -282,8 +284,8 @@ class PipelineManager:
         """Closes the connection to a video camera by deleting the
         jetson.utils.videoSource.
 
-        :param dev_index: the number of the video camera device that is being
-        closed.
+        :param dev_index: An integer that is the number of the video camera
+            device that is being closed.
         """
         self._video_sources[dev_index] = None
 
@@ -297,10 +299,10 @@ class PipelineManager:
         caught and the program resumes. The only effect is that the
         videoSource is not made.
 
-        :param dev_index: the number of the video camera device that is being
-        opened.
+        :param dev_index: An integer that is the number of the video camera
+            device that is being opened.
         :param pipe_index: An integer that is the number that the device is
-        intended to be streamed for.
+            intended to be streamed for.
         """
         if dev_index == -1:
             return
@@ -325,8 +327,8 @@ class PipelineManager:
     def _get_pipe_arguments(self, pipe_index: int) -> List[str]:
         """Returns a list of the current arguments for the pipeline.
 
-        :param pipe_index: the number of the pipeline whose device is being
-            checked.
+        :param pipe_index: An integer that is the number of the pipeline whose
+            device is being checked.
         :return: A list of strings that represent the arguments used to create
             the jetson.utils objects.
         """
@@ -373,7 +375,7 @@ class PipelineManager:
         """Returns True if the pipeline is streaming the device.
 
         :param pipe_index: An integer that is the number of the pipeline.
-        :param dev_index: The number of the camera device.
+        :param dev_index: An integer that is the number of the camera device.
         :return: A boolean that tells if the pipeline is currently streaming
             the device.
         """
@@ -414,17 +416,14 @@ class PipelineManager:
         )
 
     def _stop_all_pipelines_using_this_device(self, dev_index: int) -> None:
-        """Stops streams of all pipelines that are streaming a particular
+        """
+        Stops streams of all pipelines that are streaming a particular
         device.
 
         This function is called when the device has errored.
 
-        Args:
-            dev_index: An integer that makes a pipeline stop streaming if it
+        :param dev_index: An integer that makes a pipeline stop streaming if it
             currently streaming that device number.
-
-        Returns:
-            None.
         """
         self._close_video_source(dev_index)
         for pipeline in self._pipelines:
