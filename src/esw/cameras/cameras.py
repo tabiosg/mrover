@@ -63,6 +63,7 @@ class Pipeline:
         Returns:
             A boolean that is the success of capture and render.
         """
+        assert self._video_source is not None
         try:
             image = self._video_source.Capture()
             self._video_output.Render(image)
