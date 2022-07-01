@@ -184,13 +184,8 @@ class PipelineManager:
             "cameras/max_video_device_id_number"
         )
 
-        self._mission_ips_map = {}
-        self._mission_res_map = {}
-        for missions_map in rospy.get_param("cameras/missions").items():
-            mission_name = missions_map['name']
-            self._mission_ips_map[mission_name] = missions_map['ips']
-            self._mission_res_map[mission_name] = missions_map['resolution']
-
+        self._update_mission_ips_and_res_maps()
+        
         self._current_mission = self._default_mission
         self._video_sources = [None] * self._max_vid_dev_id_number
         number_of_pipelines = rospy.get_param(
@@ -204,6 +199,26 @@ class PipelineManager:
         self._update_all_resolution_arguments()
         self._update_all_ips()
         self._update_all_video_outputs()
+
+    def _update_mission_ips_and_res_maps(self) -> None:
+        """Fills in mission ips and resolutions maps from cameras.yaml
+        Returns nothing.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
+        self._mission_ips_map = {}
+        self._mission_res_map = {}
+        # missions_map: dict
+        for missions_map in rospy.get_param("cameras/missions"):
+            mission_name = missions_map['name']
+            # streams_map: list
+            for streams_map in missions_map['streams']:
+                self._mission_ips_map[mission_name] = streams_map['endpoint']
+                self._mission_res_map[mission_name] = missions_map['resolution']
 
     def handle_change_camera_mission(
         self, req: ChangeCameraMissionRequest
