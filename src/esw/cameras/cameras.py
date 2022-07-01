@@ -468,12 +468,10 @@ class PipelineManager:
             {self._get_ip(pipe_index)}."
         )
 
-    def _stop_all_pipelines_using_this_device(
-        self, dev_index: int
-    ) -> None:
+    def _stop_all_pipelines_using_this_device(self, dev_index: int) -> None:
         """Stops streams of all pipelines that are streaming a particular
         device.
-        
+
         This function is called when the device has errored.
 
         Args:
