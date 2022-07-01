@@ -34,8 +34,8 @@ class Pipeline:
         its input. -1 means it is not assigned any device.
         _video_output: A jetson.utils.videoOutput object that holds its output
         info.
-        _video_source: A jetson.utils.videoSource object that holds the video
-        source info.
+        _video_sources: A jetson.utils.videoSource object that holds the video
+        sources info.
     """
     arguments: List[str]
     current_ip: str
