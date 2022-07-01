@@ -202,13 +202,6 @@ class PipelineManager:
 
     def _update_mission_ips_and_res_maps(self) -> None:
         """Fills in mission ips and resolutions maps from cameras.yaml
-        Returns nothing.
-
-        Args:
-            None.
-
-        Returns:
-            None.
         """
         self._mission_ips_map = {}
         self._mission_res_map = {}
