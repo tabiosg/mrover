@@ -23,31 +23,30 @@ cameras:
     missions:
         - name: auton
           streams:
-            - endpoint: "10.0.0.1:5000"
-              resolution: 144
-            - endpoint: "10.0.0.1:5001"
-              resolution: 144
+          - endpoint: "10.0.0.1:5000"
+            resolution: 144
+          - endpoint: "10.0.0.1:5001"
+            resolution: 144
         - name: erd
           streams:
-            - endpoint: "10.0.0.1:5000"
-              resolution: 144
-            - endpoint: "10.0.0.1:5001"
-              resolution: 144
+          - endpoint: "10.0.0.1:5000"
+            resolution: 144
+          - endpoint: "10.0.0.1:5001"
+            resolution: 144
         - name: es
           streams:
-            - endpoint: "10.0.0.1:5000"
-              resolution: 720
-            - endpoint: "10.0.0.1:5001"
-              resolution: 720
+          - endpoint: "10.0.0.1:5000"
+            resolution: 720
+          - endpoint: "10.0.0.1:5001"
+            resolution: 720
         - name: science
-          ips:
-            streams:
-            - endpoint: "10.0.0.1:5000"
-              resolution: 144
-            - endpoint: "10.0.0.1:5001"
-              resolution: 144
-            - endpoint: "10.0.0.2:5000"
-              resolution: 144
-            - endpoint: "10.0.0.2:5001"
-              resolution: 144
+          streams:
+          - endpoint: "10.0.0.1:5000"
+            resolution: 144
+          - endpoint: "10.0.0.1:5001"
+            resolution: 144
+          - endpoint: "10.0.0.2:5000"
+            resolution: 144
+          - endpoint: "10.0.0.2:5001"
+            resolution: 144
     number_of_pipelines: 4
