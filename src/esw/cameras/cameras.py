@@ -471,13 +471,14 @@ class PipelineManager:
     def _stop_all_pipelines_using_this_device(
         self, dev_index: int
     ) -> None:
-        """Stops all pipelines from using video source of pipeline.
+        """Stops streams of all pipelines that are streaming a particular
+        device.
         
         This function is called when the device has errored.
 
         Args:
-            dev_index: the number of the video camera device that is being
-            closed.
+            dev_index: An integer that makes a pipeline stop streaming if it
+            currently streaming that device number.
 
         Returns:
             None.
