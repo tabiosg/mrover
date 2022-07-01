@@ -8,7 +8,7 @@ quality, and to which IPs.
 
 """
 import sys
-from typing import List
+from typing import List, TypedDict
 
 import rospy
 from mrover.srv import (ChangeCameraMission, ChangeCameraMissionRequest,
@@ -167,10 +167,10 @@ class PipelineManager:
     _current_mission: str
     _default_mission: str
     _max_vid_dev_id_number: int
-    _mission_ips_map: dict[str, str]
-    _mission_res_map: dict[str, int]
+    _mission_ips_map: TypedDict[str, str]
+    _mission_res_map: TypedDict[str, int]
     _pipelines: List[Pipeline]
-    _res_args_map: dict[int, List[str]]
+    _res_args_map: TypedDict[int, List[str]]
     _video_sources: List[jetson.utils.videoSource]
 
     def __init__(self) -> None:
