@@ -295,11 +295,7 @@ class PipelineManager:
             on {self._get_ip(pipe_index)} \
             failed. Stopping stream."
         )
-        # TODO(SASHREEK) - If others pipelines are using, you should
-        # actually close them too. it should be
-        # stop_all_pipelines_using_this_device(failed_device).
-        self._close_device_of_pipeline_if_no_others_are_using(failed_device)
-        self._pipelines[pipe_index].stop_streaming()
+        self._stop_all_pipelines_using_this_device(failed_device)
 
     def _close_device_of_pipeline_if_no_others_are_using(
         self, pipe_index: int
@@ -471,6 +467,25 @@ class PipelineManager:
             f"Playing camera {dev_index} on \
             {self._get_ip(pipe_index)}."
         )
+
+    def _stop_all_pipelines_using_this_device(
+        self, dev_index: int
+    ) -> None:
+        """Stops all pipelines from using video source of pipeline.
+        
+        This function is called when the device has errored.
+
+        Args:
+            dev_index: the number of the video camera device that is being
+            closed.
+
+        Returns:
+            None.
+        """
+        self._close_video_source(dev_index)
+        for pipeline in self._pipelines:
+            if pipeline.device_number == dev_index:
+                pipeline.stop_streaming()
 
     def _update_active_cameras(self) -> None:
         """Updates active cameras being kept track of by modifying
