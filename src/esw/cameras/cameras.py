@@ -8,6 +8,7 @@ quality, and to which IPs.
 
 """
 import sys
+import threading
 from typing import List
 
 import rospy
@@ -161,6 +162,8 @@ class PipelineManager:
         of a device to an IP.
         _res_args_map: A dictionary that maps a resolution quality to a list
         of arguments needed for jetson.utils.
+        _video_lock: A lock used to prevent threads from accessing shared
+        variables such as _video_sources at the same time.
         _video_sources: A list of jetson.utils.videoSource's.
     """
     _active_cameras: List[int]
@@ -171,6 +174,7 @@ class PipelineManager:
     _mission_res_map: dict[str, int]
     _pipelines: List[Pipeline]
     _res_args_map: dict[int, List[str]]
+    _video_lock: threading.Lock
     _video_sources: List[jetson.utils.videoSource]
 
     def __init__(self) -> None:
@@ -192,6 +196,7 @@ class PipelineManager:
             self._mission_res_map[mission_name] = missions_map['resolution']
 
         self._current_mission = self._default_mission
+        self._video_lock = threading.Lock()
         self._video_sources = [None] * self._max_vid_dev_id_number
         number_of_pipelines = rospy.get_param(
             "cameras/number_of_pipelines"
