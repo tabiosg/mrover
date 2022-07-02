@@ -467,7 +467,7 @@ class PipelineManager:
     def _update_all_video_source_links(self) -> None:
         """Updates the links of all pipelines to the global video source.
         """
-        for  pipeline in self._pipelines:
+        for pipeline in self._pipelines:
             pipeline.link_video_sources(self._video_sources)
 
     def _update_mission(self, mission_name: str) -> None:
