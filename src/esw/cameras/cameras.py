@@ -34,33 +34,32 @@ class Pipeline:
         its input. -1 means it is not assigned any device.
     :var _video_output: A jetson.utils.videoOutput object that holds its output
         info.
-    :var _video_sources: A list of jetson.utils.videoSource objects that hold
-        the video source info.
     """
     arguments: List[str]
     current_endpoint: str
     _device_number: int
     _video_output: jetson.utils.videoOutput
-    _video_sources: List[jetson.utils.videoSource]
 
     def __init__(self) -> None:
         self.arguments = []
         self.current_endpoint = ""
         self.device_number = -1
         self._video_output = None
-        self._video_sources = []
 
-    def capture_and_render_image(self) -> bool:
+    def capture_and_render_image(
+        self, video_sources: List[jetson.utils.videoSource]
+    ) -> bool:
         """Captures an image from the video device and streams it. Returns
         boolean that is the success of capture and render.
 
         An exception will be caught if the program is unable to capture or
         render while streaming. In this case, False will be returned.
 
+        :param video_sources: A list of jetson.utils.videoSource's.
         :return: A boolean that is the success of capture and render.
         """
         try:
-            image = self._video_sources[self._device_number].Capture()
+            image = video_sources[self._device_number].Capture()
             self._video_output.Render(image)
             return True
         except Exception:
@@ -75,26 +74,15 @@ class Pipeline:
         """
         return self.device_number != -1
 
-    def link_video_sources(
-        self, video_sources: List[jetson.utils.videoSource]
-    ) -> None:
-        """Copies the reference of a list of video sources to a local variable.
-
-        Note that this is a reference since a list was assigned to a variable.
-        This means that self._video_sources can be modified outside of this
-        Pipeline object.
-
-        :param video_sources: A list of jetson.utils.videoSource's.
-        """
-        self._video_sources = video_sources
-
     def stop_streaming(self) -> None:
         """Stops streaming a camera device. This means that the pipeline is
             not assigned to a camera device.
         """
         self.device_number = -1
 
-    def update_device_number(self, dev_index: int) -> None:
+    def update_device_number(
+        self, dev_index: int, video_sources: List[jetson.utils.videoSource]
+    ) -> None:
         """Assigns the pipeline a camera device. This will also recreate the
         video output for in case the camera device resolution changes. If the
         camera device does not exist or if the request is -1, it will not be
@@ -102,10 +90,11 @@ class Pipeline:
 
         :param dev_index: An integer that is the camera device that it is
             assigned.
+        :param video_sources: A list of jetson.utils.videoSource's.
         """
         self.device_number = dev_index
         if dev_index != -1:
-            if self._video_sources[self._device_number] is not None:
+            if video_sources[self._device_number] is not None:
                 self.update_video_output()
             else:
                 print(
@@ -180,7 +169,6 @@ class PipelineManager:
         for pipe_index in range(len(self._pipelines)):
             self._pipelines[pipe_index] = Pipeline()
 
-        self._update_all_video_source_links()
         self._update_all_resolution_arguments()
         self._update_all_endpoints()
         self._update_all_video_outputs()
@@ -251,7 +239,9 @@ class PipelineManager:
         """
         for pipe_index, pipeline in enumerate(self._pipelines):
             if pipeline.is_currently_streaming():
-                success = pipeline.capture_and_render_image()
+                success = pipeline.capture_and_render_image(
+                    self._video_sources
+                )
                 if not success:
                     self._clean_up_failed_pipeline(pipe_index)
 
@@ -408,7 +398,9 @@ class PipelineManager:
         :param pipe_index: An integer that is the number of the pipeline
             that is being assigned a camera device.
         """
-        self._pipelines[pipe_index].update_device_number(dev_index)
+        self._pipelines[pipe_index].update_device_number(
+            dev_index, self._video_sources
+        )
         print(
             f"Playing camera {dev_index} on \
             {self._get_endpoint(pipe_index)}."
@@ -468,12 +460,6 @@ class PipelineManager:
             if pipe_index == 0 or pipe_index == 1:
                 continue
             pipeline.update_video_output()
-
-    def _update_all_video_source_links(self) -> None:
-        """Updates the links of all pipelines to the global video source.
-        """
-        for pipeline in self._pipelines:
-            pipeline.link_video_sources(self._video_sources)
 
     def _update_mission(self, mission_name: str) -> None:
         """Updates the mission name.
