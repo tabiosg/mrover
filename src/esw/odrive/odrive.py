@@ -106,12 +106,6 @@ class Modrive:
 
     def disarm(self) -> None:
         """Disarms the ODrive by setting the velocity to 0 and making it idle.
-
-        Args:
-            None.
-
-        Returns:
-            None.
         """
         self._set_closed_loop_ctrl()
         self._set_velocity_ctrl()
