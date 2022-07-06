@@ -1,12 +1,13 @@
-#include "Controller.h"
-#include "ControllerMap.h"
-#include "Hardware.h"
-#include "I2C.h"
+#include "../src/esw/motors/Controller.h"
+#include "../src/esw/motors/ControllerMap.h"
+#include "../src/esw/motors/Hardware.h"
+#include "../src/esw/motors/I2C.h"
 #include <iostream>
 
 #include <cmath>  // M_PI
 #include <thread> // std::this_thread::sleep_for(std::chrono::milliseconds(50));
 #include <vector>
+#include <gtest/gtest.h>
 
 #define PRINT_TEST_START printf("Running Test #%2d, %s\n", ++num_tests_ran, __FUNCTION__);
 #define PRINT_TEST_END printf("Finished Test #%2d, %s\n\n", num_tests_ran, __FUNCTION__);
@@ -247,6 +248,11 @@ int main() {
         // testAbsEnc();
         sleep(100);
     }
+
+    testing::InitGoogleTest(&argc, argv);
+    // ros::init(argc, argv, "tester");
+    // ros::NodeHandle nh;
+    return RUN_ALL_TESTS();
 
     return 0;
 }

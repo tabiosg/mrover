@@ -1,13 +1,4 @@
 <launch>
-  <arg name="arm_unit_test" default="false"/>
-  <group if="$(arg arm_unit_test)">
-    <!-- stuff that will only be evaluated if arm_unit_test is true -->
-    <!-- TODO -->
-  </group>
-
-  <group unless="$(arg arm_unit_test)">
-  <!-- stuff that will only be evaluated if arm_unit_test is false -->
-    <node name="motors" pkg="mrover" type="motors" />
-    <rosparam command="load" file="$(find mrover)/config/motors.yaml" />
-  </group>
+  <node name="motors" pkg="mrover" type="motors" />
+  <rosparam command="load" file="$(find mrover)/config/motors.yaml" />
 </launch>
