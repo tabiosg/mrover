@@ -62,9 +62,9 @@ class Pipeline:
         :param video_sources: A list of jetson.utils.videoSource's.
         :return: A boolean that is the success of capture and render.
         """
-        assert self._video_source is not None
+        assert video_sources is not None
         try:
-            image = video_sources[self._device_number].Capture()
+            image = video_sources[self.device_number].Capture()
             self._video_output.Render(image)
             return True
         except Exception:
@@ -106,7 +106,7 @@ class Pipeline:
         self.device_number = dev_index
         self._device_number_lock.release()
         if dev_index != -1:
-            if video_sources[self._device_number] is not None:
+            if video_sources[self.device_number] is not None:
                 self.update_video_output()
             else:
                 print(
@@ -120,6 +120,7 @@ class Pipeline:
         the assigned endpoint and has the proper arguments.
         """
         try:
+            assert self.current_endpoint is not ""
             self._video_output = jetson.utils.videoOutput(
                 f"rtp://{self.current_endpoint}",
                 argv=self.arguments
