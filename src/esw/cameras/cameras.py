@@ -118,9 +118,16 @@ class Pipeline:
     def update_video_output(self) -> None:
         """Updates the video output to ensure that pipeline is streaming to
         the assigned endpoint and has the proper arguments.
+
+        Requires that self.current_endpoint and self.arguments are not empty.
         """
         try:
-            assert self.current_endpoint is not ""
+            assert len(self.current_endpoint), (
+                "self.current_endpoint should not be empty"
+            )
+            assert len(self.arguments), (
+                "self.arguments should not be empty"
+            )
             self._video_output = jetson.utils.videoOutput(
                 f"rtp://{self.current_endpoint}",
                 argv=self.arguments
