@@ -175,7 +175,7 @@ class PipelineManager:
             "cameras/max_video_device_id_number"
         )
         self._mission_streams_map = {}
-        self._update_mission_streams_map()
+        self.__initialize_mission_streams_map()
 
         self._current_mission = self._default_mission
         self._video_source_lock = threading.Lock()
@@ -188,17 +188,9 @@ class PipelineManager:
         for pipe_index in range(len(self._pipelines)):
             self._pipelines[pipe_index] = Pipeline()
 
-        self._update_all_resolution_arguments()
-        self._update_all_endpoints()
-        self._update_all_video_outputs()
-
-    def _update_mission_streams_map(self) -> None:
-        """Fills in mission endpoints and resolutions maps from cameras.yaml.
-        """
-        for mission in rospy.get_param("cameras/missions"):
-            mission_name = mission['name']
-            streams = mission['streams']
-            self._mission_streams_map[mission_name] = streams
+        self._change_all_pipe_resolution_arguments()
+        self._change_all_pipe_endpoints()
+        self._change_all_pipe_video_outputs()
 
     def handle_change_camera_mission(
         self, req: ChangeCameraMissionRequest
@@ -216,9 +208,9 @@ class PipelineManager:
         if self._current_mission == mission_name:
             return ChangeCameraMissionResponse(self._current_mission)
         self._update_mission(mission_name)
-        self._update_all_resolution_arguments()
-        self._update_all_endpoints()
-        self._update_all_video_outputs()
+        self._change_all_pipe_resolution_arguments()
+        self._change_all_pipe_endpoints()
+        self._change_all_pipe_video_outputs()
 
         return ChangeCameraMissionResponse(self._current_mission)
 
@@ -273,6 +265,39 @@ class PipelineManager:
                 self._video_source_lock.release()
                 if not success:
                     self._clean_up_failed_pipeline(pipe_index)
+
+    def _change_all_pipe_endpoints(self) -> None:
+        """Updates the endpoints to what is currently being requested.
+
+        Only skip if 0 or 1 because it's the same either way.
+        NOTE: This is an optimization trick made because of how we made the
+        camera system on the rover. This may change in the future if we decide
+        to make the first two ips different per mission.
+        """
+        for pipe_index, pipeline in enumerate(self._pipelines):
+            if pipe_index == 0 or pipe_index == 1:
+                continue
+            pipeline.current_endpoint = self._get_endpoint(pipe_index)
+
+    def _change_all_pipe_resolution_arguments(self) -> None:
+        """Updates the video resolutions to what is currently being requested.
+        """
+        for pipe_number, pipeline in enumerate(self._pipelines):
+            pipeline.arguments = self._get_pipe_arguments(pipe_number)
+
+    def _change_all_pipe_video_outputs(self) -> None:
+        """Updates the video outputs and endpoints and video resolutions to
+        what is currently being requested.
+
+        Only skip if 0 or 1 because it's the same either way.
+        NOTE: This is an optimization trick made because of how we made the
+        camera system on the rover. This may change in the future if we decide
+        to make the first two endpoints different per mission.
+        """
+        for pipe_index, pipeline in enumerate(self._pipelines):
+            if pipe_index == 0 or pipe_index == 1:
+                continue
+            pipeline.update_video_output()
 
     def _clean_up_failed_pipeline(self, pipe_index: int) -> None:
         """Cleans up a pipeline after its device has failed by unassigning it
@@ -384,6 +409,14 @@ class PipelineManager:
         resolution = self._get_stream(pipe_index)['resolution']
         return self._res_args_map[resolution]
 
+    def __initialize_mission_streams_map(self) -> None:
+        """Fills in mission endpoints and resolutions maps from cameras.yaml.
+        """
+        for mission in rospy.get_param("cameras/missions"):
+            mission_name = mission['name'].lower()
+            streams = mission['streams']
+            self._mission_streams_map[mission_name] = streams
+
     def _is_mission_name_valid(self, mission_name: str) -> bool:
         """Returns True if the mission_name is valid.
 
@@ -466,39 +499,6 @@ class PipelineManager:
         for index, pipeline in enumerate(self._pipelines):
             self._active_cameras[index] = pipeline.device_number
 
-    def _update_all_endpoints(self) -> None:
-        """Updates the endpoints  to what is currently being requested.
-
-        Only skip if 0 or 1 because it's the same either way.
-        NOTE: This is an optimization trick made because of how we made the
-        camera system on the rover. This may change in the future if we decide
-        to make the first two ips different per mission.
-        """
-        for pipe_index, pipeline in enumerate(self._pipelines):
-            if pipe_index == 0 or pipe_index == 1:
-                continue
-            pipeline.current_endpoint = self._get_endpoint(pipe_index)
-
-    def _update_all_resolution_arguments(self) -> None:
-        """Updates the video resolutions to what is currently being requested.
-        """
-        for pipe_number, pipeline in enumerate(self._pipelines):
-            pipeline.arguments = self._get_pipe_arguments(pipe_number)
-
-    def _update_all_video_outputs(self) -> None:
-        """Updates the video outputs and endpoints and video resolutions to
-        what is currently being requested.
-
-        Only skip if 0 or 1 because it's the same either way.
-        NOTE: This is an optimization trick made because of how we made the
-        camera system on the rover. This may change in the future if we decide
-        to make the first two endpoints different per mission.
-        """
-        for pipe_index, pipeline in enumerate(self._pipelines):
-            if pipe_index == 0 or pipe_index == 1:
-                continue
-            pipeline.update_video_output()
-
     def _update_mission(self, mission_name: str) -> None:
         """Updates the mission name.
 
@@ -510,14 +510,6 @@ class PipelineManager:
             print("Invalid mission name. Not changing the mission.")
             return
         self._current_mission = mission_name
-
-    def _update_mission_streams_map(self) -> None:
-        """Fills in mission endpoints and resolutions maps from cameras.yaml.
-        """
-        for mission in rospy.get_param("cameras/missions"):
-            mission_name = mission['name'].lower()
-            streams = mission['streams']
-            self._mission_streams_map[mission_name] = streams
 
 
 def main():
