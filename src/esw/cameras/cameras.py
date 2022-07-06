@@ -191,6 +191,14 @@ class PipelineManager:
         self._update_all_endpoints()
         self._update_all_video_outputs()
 
+    def _update_mission_streams_map(self) -> None:
+        """Fills in mission endpoints and resolutions maps from cameras.yaml.
+        """
+        for mission in rospy.get_param("cameras/missions"):
+            mission_name = mission['name']
+            streams = mission['streams']
+            self._mission_streams_map[mission_name] = streams
+
     def handle_change_camera_mission(
         self, req: ChangeCameraMissionRequest
     ) -> ChangeCameraMissionResponse:
