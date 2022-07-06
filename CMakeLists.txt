@@ -72,7 +72,17 @@ catkin_python_setup()
 add_message_files(
         FILES
         ArmOpenLoopCmd.msg
+        ArmPosition.msg
+        Calibrated.msg
+        CarouselOpenLoopCmd.msg
         Course.msg
+        Enable.msg
+        HandCmd.msg
+        MastGimbalCmd.msg
+        SAOpenLoopCmd.msg
+        SAPosition.msg
+        ScienceHandCmd.msg
+        Signal.msg
         Waypoint.msg
 )
 
