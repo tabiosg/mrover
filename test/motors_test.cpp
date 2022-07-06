@@ -9,14 +9,9 @@
 #include <vector>
 #include <gtest/gtest.h>
 
-#define PRINT_TEST_START printf("Running Test #%2d, %s\n", ++num_tests_ran, __FUNCTION__);
-#define PRINT_TEST_END printf("Finished Test #%2d, %s\n\n", num_tests_ran, __FUNCTION__);
+constexpr float angle_error_degrees = 10.0f;
 
-#define ANGLE_ERROR_DEGREES 5
-
-int num_tests_ran = 0;
-
-std::vector<std::string> motor_names;
+std::vector<std::string> arm_motor_names;
 
 void sleep(int ms) {
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
@@ -90,7 +85,7 @@ float absEnc(std::string name) {
 }
 
 void testQuadEnc() {
-    for (auto name: motor_names) {
+    for (auto name: arm_motor_names) {
         float quad_angle_deg = quadEnc(name);
         printf("[%s] Quad degrees: %f \n", name.c_str(), quad_angle_deg);
         sleep(50);
@@ -98,18 +93,19 @@ void testQuadEnc() {
 }
 
 void testAbsEnc() {
-    PRINT_TEST_START
-    for (auto name: motor_names) {
+    for (auto name: arm_motor_names) {
         float abs_angle_deg = absEnc(name);
         printf("[%s] Absolute degrees: %f \n", name.c_str(), abs_angle_deg);
         sleep(10);
     }
-    PRINT_TEST_END
 }
 
-void testClosed() {
-    PRINT_TEST_START
-    for (auto name: motor_names) {
+TEST (ArmTest, DISABLED_ClosedTest) {
+    // TODO - THINK OF A WAY TO ABANDON SHIP IF CLOSED LOOP TEST IS BAD
+    // Steps:
+    // 1. identify what signs there are to tell if a test is going bad
+    // 2. abandon ship if those signs occur
+    for (auto name: arm_motor_names) {
         float p, i, d;
         p = ControllerMap::controllers[name]->kP;
         i = ControllerMap::controllers[name]->kI;
@@ -120,7 +116,7 @@ void testClosed() {
     }
 
     while (1) {
-        for (auto name: motor_names) {
+        for (auto name: arm_motor_names) {
             float current_angle_deg = 0;
             float offset_deg[4] = {10, -10, 10, -10};
             float target_deg = 0;
@@ -137,19 +133,19 @@ void testClosed() {
                     sleep(20);
                 } while (std::abs(current_angle_deg - target_deg) > 0.6);
 
+                EXPECT_TRUE (std::abs(current_angle_deg - target_deg) <= 0.6)
                 printf("Arrived at position %i\n", i);
                 sleep(400);
             }
         }
     }
-    PRINT_TEST_END
+
 }
 
 void testOpenPlus() {
-    PRINT_TEST_START
 
     float speed_unit = 1.0f;
-    for (auto name: motor_names) {
+    for (auto name: arm_motor_names) {
         std::vector<float> speeds = {speed_unit, -speed_unit, 0.0f};
         std::vector<int> iterations = {3, 3, 5};
 
@@ -160,17 +156,15 @@ void testOpenPlus() {
             }
         }
     }
-    PRINT_TEST_END
 }
 
 void testOpenPlusWithAbs() {
-    PRINT_TEST_START
 
     float quad_angle_deg = 0.0f;
     float abs_angle_deg = 0.0f;
     float speed_unit = 1.0f;
 
-    for (auto name: motor_names) {
+    for (auto name: arm_motor_names) {
         std::vector<float> speeds = {speed_unit, 0.0f, -speed_unit, 0.0f};
 
         for (size_t j = 0; j < speeds.size(); ++j) {
@@ -180,24 +174,22 @@ void testOpenPlusWithAbs() {
                 abs_angle_deg = absEnc(name);
                 sleep(200);
                 float encoder_error_difference = quad_angle_deg - abs_angle_deg;
-                if (std::abs(encoder_error_difference) >= ANGLE_ERROR_DEGREES) {
+                if (std::abs(encoder_error_difference) >= angle_error_degrees) {
                     printf("ANGLE ERROR on %s! Quad is %f, absolute is %f, diff is %f \n\n", name.c_str(), quad_angle_deg, abs_angle_deg, encoder_error_difference);
                 }
             }
         }
         std::cout << std::endl;
     }
-    PRINT_TEST_END
 }
 
 void testOpenPlusWithAbsWithDelays() {
-    PRINT_TEST_START
 
     float quad_angle_deg = 0.0f;
     float abs_angle_deg = 0.0f;
     float speed_unit = 1.0f;
 
-    for (auto name: motor_names) {
+    for (auto name: arm_motor_names) {
 
         std::vector<float> speeds = {speed_unit, 0.0f, -speed_unit, 0.0f};
         std::vector<int> iterations = {3, 10, 3, 10};
@@ -214,7 +206,7 @@ void testOpenPlusWithAbsWithDelays() {
                 abs_angle_deg = absEnc(name);
                 sleep(200);
                 float difference = quad_angle_deg - abs_angle_deg;
-                if (std::abs(difference) >= ANGLE_ERROR_DEGREES) {
+                if (std::abs(difference) >= angle_error_degrees) {
                     printf("ANGLE ERROR on %s! Quad is %f, absolute is %f, diff is %f \n\n", name.c_str(), quad_angle_deg, abs_angle_deg, difference);
                 }
             }
@@ -222,16 +214,15 @@ void testOpenPlusWithAbsWithDelays() {
 
         std::cout << std::endl;
     }
-    PRINT_TEST_END
 }
 
 int main() {
-    motor_names.push_back("ARM_A");
-    motor_names.push_back("ARM_B");
-    motor_names.push_back("ARM_C");
-    motor_names.push_back("ARM_D");
-    motor_names.push_back("ARM_E");
-    motor_names.push_back("ARM_F");
+    arm_motor_names.push_back("ARM_A");
+    arm_motor_names.push_back("ARM_B");
+    arm_motor_names.push_back("ARM_C");
+    arm_motor_names.push_back("ARM_D");
+    arm_motor_names.push_back("ARM_E");
+    arm_motor_names.push_back("ARM_F");
 
     printf("Initializing virtual controllers\n");
     ControllerMap::init();
@@ -240,7 +231,6 @@ int main() {
     I2C::init();
 
     while (1) {
-        // testClosed();
         // testQuadEnc();
         // testOpenPlusWithAbs();
         testOpenPlusWithAbsWithDelays();
