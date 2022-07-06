@@ -170,7 +170,8 @@ class PipelineManager:
             quality = input_map['resolution']
             self._res_args_map[quality] = input_map['arguments']
 
-        self._default_mission = rospy.get_param("cameras/default_mission")
+        self._default_mission = \
+            rospy.get_param("cameras/default_mission").lower()
         self._max_vid_dev_id_number = rospy.get_param(
             "cameras/max_video_device_id_number"
         )
