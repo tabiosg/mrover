@@ -71,8 +71,8 @@ class Pipeline:
             return False
 
     def is_currently_streaming(self) -> bool:
-        """Returns whether or not the pipeline is assigned a active camera
-            device.
+        """Returns whether or not the pipeline is assigned an active camera
+        device.
 
         :return: A boolean that returns True if the pipeline is assigned an
             active camera device.
@@ -84,7 +84,7 @@ class Pipeline:
 
     def stop_streaming(self) -> None:
         """Stops streaming a camera device. This means that the pipeline is
-            not assigned to a camera device.
+        not assigned to a camera device.
         """
         self._device_number_lock.acquire()
         self.device_number = -1
@@ -191,14 +191,6 @@ class PipelineManager:
         self._update_all_endpoints()
         self._update_all_video_outputs()
 
-    def _update_mission_streams_map(self) -> None:
-        """Fills in mission endpoints and resolutions maps from cameras.yaml.
-        """
-        for mission in rospy.get_param("cameras/missions"):
-            mission_name = mission['name']
-            streams = mission['streams']
-            self._mission_streams_map[mission_name] = streams
-
     def handle_change_camera_mission(
         self, req: ChangeCameraMissionRequest
     ) -> ChangeCameraMissionResponse:
@@ -227,6 +219,9 @@ class PipelineManager:
         """Processes a request to change the active cameras. Returns a list of
         the active cameras after processing the request.
 
+        Note that if the user requests more streams than what is permitted by
+        the current active mission, then the additional requests are ignored.
+
         :param req: A list of the requested active cameras that should be
             streamed at each of the pipelines. Note that -1 means no cameras
             should be streaming at that pipeline.
@@ -235,7 +230,12 @@ class PipelineManager:
             that pipeline.
         """
         requested_devices = req.cameras
-        for stream_index in range(len(self._get_all_streams())):
+        number_of_streams = len(self._get_all_streams())
+        for device_index in range(len(requested_devices)):
+            if device_index >= number_of_streams:
+                requested_devices[device_index] = -1
+
+        for stream_index in range(len(requested_devices)):
             requested_device = requested_devices[stream_index]
             if self._is_device_streamed_by_pipe(
                 requested_device, stream_index
@@ -390,8 +390,9 @@ class PipelineManager:
     ) -> bool:
         """Returns True if the pipeline is streaming the device.
 
-        :param pipe_index: An integer that is the number of the pipeline.
         :param dev_index: An integer that is the number of the camera device.
+            May be -1.
+        :param pipe_index: An integer that is the number of the pipeline.
         :return: A boolean that tells if the pipeline is currently streaming
             the device.
         """
@@ -441,8 +442,9 @@ class PipelineManager:
         This function is called when the device has errored.
 
         :param dev_index: An integer that makes a pipeline stop streaming if it
-            currently streaming that device number.
+            currently streaming that device number. Must not be -1.
         """
+        assert dev_index != -1, "dev_index should not be -1"
         self._close_video_source(dev_index)
         for pipeline in self._pipelines:
             if pipeline.device_number == dev_index:
@@ -499,6 +501,14 @@ class PipelineManager:
             print("Invalid mission name. Not changing the mission.")
             return
         self._current_mission = mission_name
+
+    def _update_mission_streams_map(self) -> None:
+        """Fills in mission endpoints and resolutions maps from cameras.yaml.
+        """
+        for mission in rospy.get_param("cameras/missions"):
+            mission_name = mission['name'].lower()
+            streams = mission['streams']
+            self._mission_streams_map[mission_name] = streams
 
 
 def main():
