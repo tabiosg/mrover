@@ -29,7 +29,7 @@ void Controller::make_live() {
         // get absolute encoder correction #
         // not needed for joint F
 
-        float abs_raw_angle = 0;
+        float abs_raw_angle = 0.0f;
 
         if (name == "ARM_B" || name == "SA_B" || name == "ARM_F") {
             abs_raw_angle = M_PI;
@@ -67,7 +67,7 @@ void Controller::record_angle(int32_t raw_angle) {
 }
 
 float Controller::get_current_angle() {
-    float return_angle = 0.0;
+    float return_angle = 0.0f;
     current_angle_m.lock();
     return_angle = current_angle;
     current_angle_m.unlock();
