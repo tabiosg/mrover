@@ -35,7 +35,7 @@ class VideoInfo:
     endpoint: str = ""
 
     def __eq__(self, other):
-        """Overrides the equality comparator operator
+        """Overrides the equality comparator operator.
         """
         return (
             self.arguments == other.arguments
