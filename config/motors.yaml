@@ -3,6 +3,9 @@ motors:
   controllers:
     - name: "ARM_A"
       type: "Motor29Percent"
+      input_voltage: 36
+      output_voltage: 24
+      voltage_multiplier: 0.44
       nucleo: 0
       channel: 0
       quadCPR: -28800.0
@@ -11,6 +14,8 @@ motors:
       inversion: -1.0
     - name: "ARM_B"
       type: "Motor12V"
+      input_voltage: 36
+      output_voltage: 12
       nucleo: 0
       channel: 1
       quadCPR: 4096.0
@@ -19,6 +24,8 @@ motors:
       inversion: 1.0
     - name: "ARM_C"
       type: "Motor24V"
+      input_voltage: 36
+      output_voltage: 24
       nucleo: 1
       channel: 0
       quadCPR: 136800.0
@@ -27,6 +34,8 @@ motors:
       inversion: 1.0
     - name: "ARM_D"
       type: "Motor24V"
+      input_voltage: 36
+      output_voltage: 24
       nucleo: 1
       channel: 1
       quadCPR: 72000.0
@@ -35,6 +44,8 @@ motors:
       inversion: 1.0
     - name: "ARM_E"
       type: "Motor24V"
+      input_voltage: 36
+      output_voltage: 24
       nucleo: 2
       channel: 0
       quadCPR: -72000.0
@@ -43,6 +54,8 @@ motors:
       inversion: 1.0
     - name: "ARM_F"
       type: "Motor24V"
+      input_voltage: 36
+      output_voltage: 24
       nucleo: 2
       channel: 1
       quadCPR: -2048.0
@@ -51,6 +64,8 @@ motors:
       inversion: 1.0
     - name: "CAROUSEL_MOTOR"
       type: "Motor12V"
+      input_voltage: 36
+      output_voltage: 12
       nucleo: 2
       channel: 1
       quadCPR: -9072.0
@@ -59,26 +74,37 @@ motors:
       inversion: 1.0
     - name: "GIMBAL_PITCH"
       type: "HBridge"
+      input_voltage: 12
+      output_voltage: 12
       nucleo: 2
       channel: 3
       inversion: -1.0
     - name: "GIMBAL_YAW"
       type: "HBridge"
+      input_voltage: 12
+      output_voltage: 12
       nucleo: 1
       channel: 3
       inversion: -1.0
     - name: "HAND_FINGER"
       type: "HBridge"
+      input_voltage: 12
+      output_voltage: 12
       nucleo: 2
       channel: 2
       inversion: 1.0
     - name: "HAND_GRIP"
       type: "HBridge"
+      input_voltage: 12
+      output_voltage: 12
       nucleo: 1
       channel: 2
       inversion: 1.0
     - name: "SA_A"
       type: "Motor29Percent"
+      input_voltage: 36
+      output_voltage: 24
+      voltage_multiplier: 0.44
       nucleo: 0
       channel: 0
       quadCPR: -28800.0
@@ -87,6 +113,8 @@ motors:
       inversion: -1.0
     - name: "SA_B"
       type: "Motor12V"
+      input_voltage: 36
+      output_voltage: 12
       nucleo: 0
       channel: 1
       quadCPR: 4096.0
@@ -95,6 +123,8 @@ motors:
       inversion: 1.0
     - name: "SA_C"
       type: "Motor24V"
+      input_voltage: 36
+      output_voltage: 24
       nucleo: 1
       channel: 0
       quadCPR: 136800.0
@@ -103,6 +133,8 @@ motors:
       inversion: 1.0
     - name: "SA_E"
       type: "Motor24V"
+      input_voltage: 36
+      output_voltage: 24
       nucleo: 2
       channel: 0
       quadCPR: -72000.0
@@ -111,11 +143,15 @@ motors:
       inversion: 1.0
     - name: "SCIENCE_HAND_SCOOP"
       type: "HBridge"
+      input_voltage: 12
+      output_voltage: 12
       nucleo: 1
       channel: 2
       inversion: 1.0
     - name: "SCIENCE_HAND_SENSOR"
       type: "HBridge"
+      input_voltage: 12
+      output_voltage: 12
       nucleo: 2
       channel: 2
       inversion: 1.0
