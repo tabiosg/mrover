@@ -304,7 +304,6 @@ Find someone on ESW. Or just go ahead and contact madcowswe himself.
 ---
 
 ## TODO
-- [ ] Look into changing multiplier so config changes from [0, 1] to m/s and there is a different value for turns to meters
 - [ ] Test with ROS
 - [ ] Make sure messages and topics are consistent with the gui and teleop programs
 
