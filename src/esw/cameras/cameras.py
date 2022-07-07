@@ -211,10 +211,9 @@ class PipelineManager:
         self._active_cameras = [-1] * number_of_pipelines
         for pipe_index in range(len(self._pipelines)):
             self._pipelines[pipe_index] = Pipeline()
-
-        default_mission = \
+        self._update_mission(
             rospy.get_param("cameras/default_mission").lower()
-        self._update_mission(default_mission)
+        )
 
     def handle_change_camera_mission(
         self, req: ChangeCameraMissionRequest
