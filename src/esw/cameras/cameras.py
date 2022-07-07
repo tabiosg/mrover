@@ -166,7 +166,7 @@ class PipelineManager:
         that are being streaming by each pipeline.
     :var _current_mission: A string that is the current mission. The
         camera qualities and endpoints depend on the mission. Initialized
-        to the default mission.
+        to the default mission initialized in the config.
     :var _max_vid_dev_id_number: An integer that is the maximum possible
         video devices connected to the Jetson. This determines up to which
         number we can look inside /dev/video*.
