@@ -521,10 +521,12 @@ class ODriveBridge(object):
     def _change_speeds(self, left: float, right: float) -> None:
         """
         Sets the self._left_speed and self._right_speed to the requested
-        speeds.
+        speeds. TODO - EXPLICITLY SAY WHICH UNITS AND CHANGE THROTTLE
         :param left: A float representing the requested left wheel speed.
         :param right: A float representing the requested right wheel speed.
         """
+        assert 0.0 <= left and left <= 1.0
+        assert 0.0 <= right and right <= 1.0
         self._speed_lock.acquire()
         self._left_speed = left
         self._right_speed = right
