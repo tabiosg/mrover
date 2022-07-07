@@ -282,6 +282,39 @@ class PipelineManager:
                 if not success:
                     self._clean_up_failed_pipeline(pipe_index)
 
+    def _change_all_pipe_endpoints(self) -> None:
+        """Updates the endpoints to what is currently being requested.
+
+        Only skip if 0 or 1 because it's the same either way.
+        NOTE: This is an optimization trick made because of how we made the
+        camera system on the rover. This may change in the future if we decide
+        to make the first two ips different per mission.
+        """
+        for pipe_index, pipeline in enumerate(self._pipelines):
+            if pipe_index == 0 or pipe_index == 1:
+                continue
+            pipeline.current_endpoint = self._get_endpoint(pipe_index)
+
+    def _change_all_pipe_resolution_arguments(self) -> None:
+        """Updates the video resolutions to what is currently being requested.
+        """
+        for pipe_number, pipeline in enumerate(self._pipelines):
+            pipeline.arguments = self._get_pipe_arguments(pipe_number)
+
+    def _change_all_pipe_video_outputs(self) -> None:
+        """Updates the video outputs and endpoints and video resolutions to
+        what is currently being requested.
+
+        Only skip if 0 or 1 because it's the same either way.
+        NOTE: This is an optimization trick made because of how we made the
+        camera system on the rover. This may change in the future if we decide
+        to make the first two endpoints different per mission.
+        """
+        for pipe_index, pipeline in enumerate(self._pipelines):
+            if pipe_index == 0 or pipe_index == 1:
+                continue
+            pipeline.update_video_output()
+
     def _clean_up_failed_pipeline(self, pipe_index: int) -> None:
         """Cleans up a pipeline after its device has failed by unassigning it
         to a device and safely closing the stream and the video source.
