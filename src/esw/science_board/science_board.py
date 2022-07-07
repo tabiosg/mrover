@@ -244,12 +244,6 @@ class ScienceBridge():
 
         Depending on the NMEA tag of the message, the proper function
         will be called to process the message.
-
-        Args:
-            None.
-
-        Returns:
-            None.
         """
         tx_msg = self._read_msg()
         match_found = False
