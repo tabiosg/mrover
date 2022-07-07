@@ -186,8 +186,6 @@ Actual behavior: The program freezes (presumably on the Capture function).
 ---
 
 ## TODO - ROS Migration
-- [ ] Migrate basics of code that runs on Jetson
 - [ ] Migrate basics of code that runs on base station
 - [ ] Make sure stuff builds
-- [ ] Fix up README.md
 - [ ] Figure out how jetson-utils should be included in the system
