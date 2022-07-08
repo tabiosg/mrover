@@ -56,10 +56,10 @@ class Modrive:
 
     :param _axes: A dictionary that maps left or right to an ODrive axes
         object.
-    :param _axis_turns_to_raw_ratio_map: A dictionary that maps left or right
+    :param _turns_to_raw_ratio_by_side: A dictionary that maps left or right
         to the vel cmd multiplier that can be used to convert a raw [0, 1]
         command to desired turns.
-    :param _axis_meters_to_turns_ratio_map: A dictionary that maps left or
+    :param _meters_to_turns_ratio_by_side: A dictionary that maps left or
         right to a multiplier that can be used to convert turns into meters.
     :param _odrive: An ODrive object
     :param _usb_lock: A lock that prevents multiple threads from accessing
@@ -67,23 +67,23 @@ class Modrive:
     :param _watchdog_timeout: A float that represents the watchdog timeout.
     """
     _axes: dict[str, Any]
-    _axis_turns_to_raw_ratio_map: dict[str, float]
-    _axis_meters_to_turns_ratio_map: dict[str, float]
+    _turns_to_raw_ratio_by_side: dict[str, float]
+    _meters_to_turns_ratio_by_side: dict[str, float]
     _odrive: Any
     _usb_lock = threading.Lock
     _watchdog_timeout: float
 
     def __init__(self, odr) -> None:
         self._odrive = odr
-        axis_map: dict[int, str] = {
+        _side_by_axis: dict[int, str] = {
             rospy.get_param("/odrive/axis/left"): 'left',
             rospy.get_param("/odrive/axis/right"): 'right'}
 
         self._axes = {
-            axis_map[0]: self._odrive.axis0,
-            axis_map[1]: self._odrive.axis1
+            _side_by_axis[0]: self._odrive.axis0,
+            _side_by_axis[1]: self._odrive.axis1
         }
-        self._axis_meters_to_turns_ratio_map = {
+        self._meters_to_turns_ratio_by_side = {
             'left': rospy.get_param(
                 "/odrive/ratio/meters_to_turns_ratio_left"
             ),
@@ -91,14 +91,14 @@ class Modrive:
                 "/odrive/ratio/meters_to_turns_ratio_right"
             )
         }
-        self._axis_turns_to_raw_ratio_map = {
+        self._turns_to_raw_ratio_by_side = {
             'left': rospy.get_param(
                 "/odrive/ratio/meters_to_raw_ratio_left"
-                / self._axis_meters_to_turns_ratio_map['left']
+                / self._meters_to_turns_ratio_by_side['left']
             ),
             'right': rospy.get_param(
                 "/odrive/ratio/meters_to_raw_ratio_right"
-                / self._axis_meters_to_turns_ratio_map['right']
+                / self._meters_to_turns_ratio_by_side['right']
             )
         }
         self._usb_lock = threading.Lock()
@@ -180,7 +180,7 @@ class Modrive:
             self._usb_lock.acquire()
             vel_est_m_s = (
                 self._axes[axis].encoder.vel_estimate
-                / self._axis_meters_to_turns_ratio_map[axis]
+                / self._meters_to_turns_ratio_by_side[axis]
             )
         except fibre.protocol.ChannelBrokenException:
             raise DisconnectedError
@@ -248,7 +248,7 @@ class Modrive:
         )
         try:
             desired_input_vel_turns_s = (
-                vel * self._axis_turns_to_raw_ratio_map[axis]
+                vel * self._turns_to_raw_ratio_by_side[axis]
             )
             assert (
                 -50 <= desired_input_vel_turns_s
