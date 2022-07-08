@@ -56,20 +56,20 @@ class Modrive:
 
     :param _axes: A dictionary that maps left or right to an ODrive axes
         object.
+    :param _meters_to_turns_ratio_by_side: A dictionary that maps left or
+        right to a multiplier that can be used to convert turns into meters.
+    :param _odrive: An ODrive object.
     :param _turns_to_raw_ratio_by_side: A dictionary that maps left or right
         to the vel cmd multiplier that can be used to convert a raw [0, 1]
         command to desired turns.
-    :param _meters_to_turns_ratio_by_side: A dictionary that maps left or
-        right to a multiplier that can be used to convert turns into meters.
-    :param _odrive: An ODrive object
     :param _usb_lock: A lock that prevents multiple threads from accessing
         ODrive objects simultaneously.
     :param _watchdog_timeout: A float that represents the watchdog timeout.
     """
     _axes: dict[str, Any]
-    _turns_to_raw_ratio_by_side: dict[str, float]
     _meters_to_turns_ratio_by_side: dict[str, float]
     _odrive: Any
+    _turns_to_raw_ratio_by_side: dict[str, float]
     _usb_lock = threading.Lock
     _watchdog_timeout: float
 
