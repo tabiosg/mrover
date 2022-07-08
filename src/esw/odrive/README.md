@@ -300,7 +300,7 @@ Find someone on ESW. Or just go ahead and contact madcowswe himself.
 ---
 
 ## TODO
-- [ ] SOMEONE DOUBLE CHECK IF THE RATIOS ARE CORRECT... THEY LOOK AWFULLY WRONG.
+- [ ] SOMEONE DOUBLE CHECK IF THE meters_to_turns_ratio IS CORRECT... IT IS LIKELY WRONG.
 I ADDED ASSERTS IN CASE I MESSED UP SOMEWHERE.
 - [ ] Test with ROS
 - [ ] Make sure messages and topics are consistent with the gui and teleop programs

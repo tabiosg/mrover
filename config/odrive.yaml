@@ -10,7 +10,7 @@ odrive:
     middle: "335B36563539"
     back: "2066377F5753"
   ratio:
-    meters_to_raw_ratio_left: -1989.0
-    meters_to_raw_ratio_right: 1989.0
     meters_to_turns_ratio_left: -39.793
     meters_to_turns_ratio_right: 39.793
+    turns_to_raw_ratio_left: -50.0
+    turns_to_raw_ratio_right: 50.0
