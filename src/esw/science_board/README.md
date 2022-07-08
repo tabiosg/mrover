@@ -139,7 +139,7 @@ Publisher: science_board \
 Subscriber: gui
 
 #### Spectral Triad Data
-Message: [`Spectral.msg`](../../../msg/Spectral.msg) "science/spectral_triad_data" \
+Message: [`Triad.msg`](../../../msg/Triad.msg) "science/spectral_triad_data" \
 Publisher: science_board \
 Subscriber: gui
 
