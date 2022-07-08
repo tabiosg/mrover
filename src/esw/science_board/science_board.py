@@ -423,8 +423,9 @@ class ScienceBridge():
         :param tx_msg: A string that was received from UART that contains data
             of the three carousel spectral sensors.
             - Format: <"SPECTRAL,site,ch_0,ch_1,....ch_5">
-        :returns: A Spectral struct that has the site of the spectral and six
-            floats that is the data of the a carousel spectral sensor.
+        :returns: A Spectral struct that has a string that is the site of the
+            spectral and six floats that is the data of the a carousel
+            spectral sensor.
         """
         tx_msg.split(',')
         arr = [s.strip().strip('\x00') for s in tx_msg.split(',')]
