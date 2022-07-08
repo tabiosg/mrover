@@ -154,7 +154,7 @@ void Controller::closed_loop(float torque, float target) {
 }
 
 // Sends a config command with PID inputs
-void Controller::config(float KP, float KI, float KD) {
+void Controller::config_pid(float KP, float KI, float KD) {
     for (int attempts = 0; attempts < 100; ++attempts) {
         try {
             make_live();
