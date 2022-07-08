@@ -75,7 +75,7 @@ class ScienceBridge():
             "THERMISTOR": rospy.Publisher(
                 'science/thermistor_data', Thermistor, queue_size=1),
             "TRIAD": rospy.Publisher(
-                'science/spectral_triad_data', Spectral, queue_size=1)
+                'science/spectral_triad_data', Triad, queue_size=1)
         }
         self._sleep = rospy.get_param("/science_board/info/sleep")
         self._uart_transmit_msg_len = rospy.get_param(
