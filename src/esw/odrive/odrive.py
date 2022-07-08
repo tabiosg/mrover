@@ -56,19 +56,19 @@ class Modrive:
 
     :param _axes: A dictionary that maps left or right to an ODrive axes
         object.
-    :param _axis_vel_cmd_mult_map: A dictionary that maps left or right to the
-        vel cmd multiplier that converts [0, 1] to [0, vel_cmd_mult] turns per
-        second.
-    :param _axis_vel_est_mult_map: A dictionary that maps left or right to a
-        multipler that converts turns/sec to m/sec.
+    :param _axis_turns_to_raw_ratio_map: A dictionary that maps left or right
+        to the vel cmd multiplier that can be used to convert a raw [0, 1]
+        command to desired turns.
+    :param _axis_meters_to_turns_ratio_map: A dictionary that maps left or
+        right to a multiplier that can be used to convert turns into meters.
     :param _odrive: An ODrive object
     :param _usb_lock: A lock that prevents multiple threads from accessing
         ODrive objects simultaneously.
     :param _watchdog_timeout: A float that represents the watchdog timeout.
     """
     _axes: dict[str, Any]
-    _axis_vel_cmd_mult_map: dict[str, float]
-    _axis_vel_est_mult_map: dict[str, float]
+    _axis_turns_to_raw_ratio_map: dict[str, float]
+    _axis_meters_to_turns_ratio_map: dict[str, float]
     _odrive: Any
     _usb_lock = threading.Lock
     _watchdog_timeout: float
@@ -83,21 +83,28 @@ class Modrive:
             axis_map[0]: self._odrive.axis0,
             axis_map[1]: self._odrive.axis1
         }
-
-        self._axis_vel_cmd_mult_map = {
+        self._axis_meters_to_turns_ratio_map = {
             'left': rospy.get_param(
-                "/odrive/multiplier/vel_cmd_multiplier_left"),
+                "/odrive/ratio/meters_to_turns_ratio_left"
+            ),
             'right': rospy.get_param(
-                "/odrive/multiplier/vel_cmd_multiplier_right")}
-
-        self._axis_vel_est_mult_map = {
+                "/odrive/ratio/meters_to_turns_ratio_right"
+            )
+        }
+        self._axis_turns_to_raw_ratio_map = {
             'left': rospy.get_param(
-                "/odrive/multiplier/vel_est_multiplier_left"),
+                "/odrive/ratio/meters_to_raw_ratio_left"
+                / self._axis_meters_to_turns_ratio_map['left']
+            ),
             'right': rospy.get_param(
-                "/odrive/multiplier/vel_est_multiplier_right")}
+                "/odrive/ratio/meters_to_raw_ratio_right"
+                / self._axis_meters_to_turns_ratio_map['right']
+            )
+        }
         self._usb_lock = threading.Lock()
         self._watchdog_timeout = rospy.get_param(
-            "/odrive/config/watchdog_timeout")
+            "/odrive/config/watchdog_timeout"
+        )
 
     def __getattr__(self, attr: Any) -> Any:
         """
@@ -143,8 +150,9 @@ class Modrive:
         )
         try:
             self._usb_lock.acquire()
-            measured_current = \
+            measured_current = (
                 self._axes[axis].motor.current_control.Iq_measured
+            )
         except fibre.protocol.ChannelBrokenException:
             raise DisconnectedError
         finally:
@@ -155,6 +163,9 @@ class Modrive:
         """
         Returns the estimated velocity of the requested wheel of the ODrive
         in meters per second.
+
+        The raw encoder.vel_estimate returns the estimate in turns per second,
+        which must then be converted into meters per second using the map.
         :param axis: A string that represents which wheel to read current from.
             The string must be "left" or "right"
         :returns: A float that is the measured current of the corresponding
@@ -169,7 +180,7 @@ class Modrive:
             self._usb_lock.acquire()
             vel_est_m_s = (
                 self._axes[axis].encoder.vel_estimate
-                * self._axis_vel_est_mult_map[axis]
+                / self._axis_meters_to_turns_ratio_map[axis]
             )
         except fibre.protocol.ChannelBrokenException:
             raise DisconnectedError
@@ -236,7 +247,14 @@ class Modrive:
             'axis must be "left" or "right"'
         )
         try:
-            desired_input_vel_turns_s = vel * self._axis_vel_cmd_mult_map[axis]
+            desired_input_vel_turns_s = (
+                vel * self._axis_turns_to_raw_ratio_map[axis]
+            )
+            assert (
+                -50 <= desired_input_vel_turns_s
+                and desired_input_vel_turns_s <= 50,
+                'magnitude of desired_input_vel_turns_sec is dangerously high'
+            )
             self._usb_lock.acquire()
             self._axes[axis].controller.input_vel = desired_input_vel_turns_s
         except fibre.protocol.ChannelBrokenException:
