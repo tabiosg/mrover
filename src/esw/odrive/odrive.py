@@ -14,6 +14,7 @@ an ODrive is assigned either the front, middle, or back wheels).
 import sys
 import threading
 import time as t
+from dataclasses import dataclass
 from enum import Enum
 from typing import Any
 
