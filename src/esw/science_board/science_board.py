@@ -479,7 +479,7 @@ class ScienceBridge():
         """
         tx_msg.split(',')
         arr = [s.strip().strip('\x00') for s in tx_msg.split(',')]
-        ros_msg = Spectral()
+        ros_msg = Triad()
         count = 1
         for index in range(len(ros_msg.data)):
             if not count >= len(arr):
