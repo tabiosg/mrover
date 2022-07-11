@@ -64,8 +64,6 @@ void ROSHandler::handle_outgoing() {
     }
 }
 
-// The following functions are handlers for the corresponding ROS messages
-
 void ROSHandler::InternalHandler::enable_scoop_limit_switch_cmd(mrover::Enable& msg) {
     ControllerMap::controllers["SCIENCE_HAND_SCOOP"]->enable_limit_switch(msg->enable);
 }
