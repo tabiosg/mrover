@@ -207,12 +207,12 @@ void ROSHandler::InternalHandler::publish_arm_calib_data() {
 
 void ROSHandler::InternalHandler::publish_arm_pos_data() {
     mrover::ArmPosition msg;
-    msg.joint_a = ControllerMap::controllers["ARM_A"]->get_current_angle();
-    msg.joint_b = ControllerMap::controllers["ARM_B"]->get_current_angle();
-    msg.joint_c = ControllerMap::controllers["ARM_C"]->get_current_angle();
-    msg.joint_d = ControllerMap::controllers["ARM_D"]->get_current_angle();
-    msg.joint_e = ControllerMap::controllers["ARM_E"]->get_current_angle();
-    msg.joint_f = ControllerMap::controllers["ARM_F"]->get_current_angle();
+    msg.joints[0] = ControllerMap::controllers["ARM_A"]->get_current_angle();
+    msg.joints[1] = ControllerMap::controllers["ARM_B"]->get_current_angle();
+    msg.joints[2] = ControllerMap::controllers["ARM_C"]->get_current_angle();
+    msg.joints[3] = ControllerMap::controllers["ARM_D"]->get_current_angle();
+    msg.joints[4] = ControllerMap::controllers["ARM_E"]->get_current_angle();
+    msg.joints[5] = ControllerMap::controllers["ARM_F"]->get_current_angle();
     arm_position_pub.publish(msg);
     last_heartbeat_output_time = NOW;
 }
