@@ -154,7 +154,7 @@ Guide for the Nanotec/Maxon motors
 1. Open up odrivetool. On the Jetson run `source ~/.mrover/build_env/bin/activate` and type `odrivetool`.
 This should open up and say we connected to ODrive. We want (I think) version 0.5.4.
 2. If it's an ODrive we used before, just double check these parameters. Otherwise, set the following anyway (numbers in parentheses were used for Rosie '22): 
-- `odrvX.axisY.motor.config.pole_pairs` which depends on the motor and is on the data sheet (was 6),
+- `odrvX.axisY.motor.config.pole_pairs` which depends on the motor and is on the data sheet (was 7),
 - `odrvX.axisY.motor.config.resstance_calib_max_voltage` which should be either 1.2 or 0.6 (was 0.6),
 - `odrvX.axisY.motor.config.requested_current_range` which should probably be 8.0 (was 8.0),
 - `odrvX.axisY.motor.config.torque_constant` which it should say on the motor's data sheet and the units are Nm per amp and it might be 52.5/1000 (was 52.5/1000)
