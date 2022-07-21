@@ -48,7 +48,7 @@ class MoteusBridge:
         fault_value = state.values[moteus.Register.FAULT]
         error = fault_value != 0
         if error:
-            print("Error #" + str(fault_value))
+            rospy.logerror(f"Error #{str(fault_value)}")
             self.c.set_stop()
             rospy.sleep(self.sleep)
             return
